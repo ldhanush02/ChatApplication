@@ -1,50 +1,55 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { Text, View, Image, StyleSheet } from 'react-native';
 
-export default function ChatListItem() {
+const ChatListItem = ({ chat }) => {
   return (
     <View style={styles.container}>
-    <Image source ={{ uri:"https://media.istockphoto.com/id/1322277517/photo/wild-grass-in-the-mountains-at-sunset.jpg?s=612x612&w=0&k=20&c=6mItwwFFGqKNKEAzv0mv6TaxhLN3zSE43bWmFN--J5w=" }}
-    style={styles.pic}/>
-    <View style={styles.content}>
-    <View style={styles.UserInfo}>
-    <Text style={styles.Name} numberOfLines={1}>Lokam Dhanush</Text>
-    <Text style={styles.subtext}>10:00</Text>
-    </View>
-    <Text style={styles.subtext} numberOfLines={2}  >Hai</Text>
-    </View>
+      <Image source ={{ uri: chat.user.image }} style={styles.image}/>
+
+      <View style={styles.content}>
+        <View style={styles.row}>
+          <Text style={styles.name} numberOfLines={1}>
+            {chat.user.name}
+          </Text>
+          <Text style={styles.subTitle}>{chat.lastMessage.createdAt}</Text>
+        </View>
+
+        <Text numberOfLines={2} style={styles.subTitle}>
+          {chat.lastMessage.text}
+        </Text>
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection:'row',
-    marginHorizontal:10,
-    marginVertical:5
+    flexDirection: 'row',
+    marginHorizontal: 10,
+    marginVertical: 5,
+    height: 70,
   },
-  pic:{
-    width :60,
-    height:60,
-    borderRadius:50,
+  image: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 10,
   },
-  content:{
-    flex:1,
-    marginHorizontal:10,
-    borderBottomColor:"lightgray",
-    borderBottomWidth:StyleSheet.hairlineWidth,
+  content: {
+    flex: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'lightgray',
   },
-  subtext:{
-    fontWeight:'310',
-    color:'grey'
+  row: {
+    flexDirection: 'row',
+    marginBottom: 5,
   },
-  Name:{
-    flex:1,
-    fontWeight:'bold'
+  name: {
+    flex: 1,
+    fontWeight: 'bold',
   },
-  UserInfo:{
-    flexDirection:'row',
-    marginBottom:5
+  subTitle: {
+    color: 'gray',
   },
-
 });
+
+export default ChatListItem;
