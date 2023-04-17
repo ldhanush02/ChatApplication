@@ -20,8 +20,6 @@ export default function App() {
   return (
     <View style={styles.container}>
       <ChatsScreen/>
-       <ChatListItem chat={chat} />
-       
       <StatusBar style="auto" />
     </View>
   );
