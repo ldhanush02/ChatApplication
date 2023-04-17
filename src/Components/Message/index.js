@@ -26,7 +26,7 @@ const Message = ({ message }) => {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 5,
+    margin: 3,
     padding: 10,
     borderRadius: 10,
     maxWidth: "80%",
