@@ -9,8 +9,6 @@ const InputBox = ({ chatroom }) => {
     const [text, setText] = useState('');
 
     const onSend = async () => {
-        console.warn('Sending a new message', text);
-
         const authUser = await Auth.currentAuthenticatedUser();
 
         const newMessage = {
