@@ -7,11 +7,13 @@ import bg from "../../assets/images/BG.png";
 import Message from "../Components/Message";
 import { Platform } from "react-native";
 import {API, graphqlOperation} from 'aws-amplify'
-import {getChatRoom} from "../graphql/queries"
+import {getChatRoom, listMessagesByChatRoom} from "../graphql/queries"
+import {onCreateMessage} from "../graphql/subscriptions"
 
 
 const ChatScreen = () => {
   const [chatRoom,setChatRoom] = useState(null);
+  const [messages,setMessages] = useState([]);
 
   const route = useRoute();
   const navigation = useNavigation();
@@ -21,8 +23,33 @@ const ChatScreen = () => {
   useEffect(() => {
     API.graphql(graphqlOperation(getChatRoom, {id: chatroomID})).then((result) => setChatRoom(result.data?.getChatRoom)
     );
-  }, []);
-  
+  }, [chatroomID]);
+  //fetch messages//
+  useEffect(() => {
+    API.graphql(graphqlOperation(listMessagesByChatRoom, {
+      chatroomID, 
+      sortDirection: "DESC"
+    })
+    ).then((result) => {
+      setMessages(result.data?.listMessagesByChatRoom?.items);
+    });
+
+    //Subscribe to messages
+    const subscription = API.graphql(
+      graphqlOperation(onCreateMessage, { 
+        filter: { chatroomID: { eq: chatroomID } },
+      })
+        ).subscribe({
+      next: ({value}) => {
+        console.log("New message")
+        console.log(value);
+        setMessages((m) => [value.data.onCreateMessage, ...m]);
+      },
+      error : (err) => console.warn(err),
+    })
+    return () => subscription.unsubscribe();
+  }, [chatroomID]);
+
   useEffect(() => {
     navigation.setOptions({ title: route.params.name });
   }, [route.params.name]);
@@ -40,7 +67,7 @@ const ChatScreen = () => {
       
     <ImageBackground source={bg} style={styles.bg}>
       <FlatList
-        data={chatRoom.Messages.items}
+        data={messages}
         renderItem={({ item }) => <Message message={item} />}
 				style={{ padding: 12 }}
 				inverted
